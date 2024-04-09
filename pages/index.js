@@ -11,11 +11,12 @@ import {
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import Link from "next/link";
+import axios from "axios";
 
 export default function Home() {
   const [startIndex, setStartIndex] = useState(0);
-  const [label, setLabel] = useState(new Set());
-  const [brand, setBrand] = useState(new Set());
+  const [brand, setBrand] = useState([]);
+  const [data, setData] = useState(null);
   const handleForward = () => {
     setStartIndex((prevIndex) => Math.min(prevIndex + 4));
   };
@@ -42,342 +43,51 @@ export default function Home() {
       img: "https://images.unsplash.com/photo-1537984822441-cff330075342?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTF8fGNhcnxlbnwwfHwwfHx8MA%3D%3D",
       details: `With plenty of talk and listen time, voice-activated Siri access, and
       an available wireless charging case`,
+      ref: "/products",
     },
     {
       name: "รถมือสอง",
       img: "https://images.unsplash.com/photo-1511125357779-27038c647d9d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDh8fGNhcnxlbnwwfHwwfHx8MA%3D%3D",
       details: `With plenty of talk and listen time, voice-activated Siri access, and
       an available wireless charging case`,
+      ref: "/products",
     },
     {
       name: "ขายรถ",
       img: "https://plus.unsplash.com/premium_photo-1663047616905-5bdff3c06010?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nzd8fGNhcnxlbnwwfHwwfHx8MA%3D%3D",
       details: `With plenty of talk and listen time, voice-activated Siri access, and
       an available wireless charging case`,
+      ref: "/contect",
     },
   ];
 
-  const carProduct = [
-    {
-      name: "Lamborghini Aventador 2023",
-      details:
-        "Lamborghini Aventador 2023 เป็นซูเปอร์คาร์สมรรถนะสูงที่ใครๆ ก็ต้องเหลียวมอง มันมีเครื่องยนต์ V12 730 แรงม้า ขับเคลื่อนสี่ล้อ และทำเวลา 0-60 ไมล์ต่อชั่วโมงได้อย่างน่าประทับใจในเวลาเพียง 2.8 วินาที ภายในได้รับการอัพเกรดด้วยสิ่งอำนวยความสะดวกที่หรูหราทันสมัย เช่น พวงมาลัยหุ้มหนัง แผงหน้าปัดดิจิตอลเต็มรูปแบบ และเทคโนโลยีช่วยเหลือผู้ขับขี่ขั้นสูง ด้วยการออกแบบที่มีสไตล์และวิศวกรรมที่ล้ำสมัย Lamborghini Aventador 2023 จึงมั่นใจได้ว่าจะเป็นหนึ่งในรถยนต์ที่เป็นที่ต้องการมากที่สุดในตลาด",
-      price: "46,500,000",
-      label: "รถมือ 2",
-      color: "Red",
-      km: "10,000",
-      brand: "Lamborghini",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1618846446712-a4eda2adc05f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TGFtYm9yZ2hpbmklMjBBdmVudGFkb3J8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1612825173281-9a193378527e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGFtYm9yZ2hpbmklMjBBdmVudGFkb3J8ZW58MHx8MHx8fDA%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "sports car",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Honda HR-V 2024",
-      details:
-        "Honda HR-V (ฮอนด้า เอชอาร์-วี 2024) รถยนต์ Crossover SUV ขนาดเล็ก ทรงคูเป้ ตัวถัง 5 ประตู 5 ที่นั่ง บอดี้ภายนอกโดดเด่นด้วยดีไซน์สปอร์ตพรีเมียม ภายในตกแต่งอย่างทันสมัย ครบครันด้วยฟีเจอร์อำนวยความสะดวกต่าง ๆ และเทคโนโลยีความปลอดภัยอัจฉริยะ Honda SENSING พร้อมขับเคลื่อนด้วยระบบฟูลไฮบริด e:HEV อัตราสิ้นเปลืองเฉลี่ย 25.6 กิโลเมตร/ลิตร",
-      price: "1,179,000",
-      label: "รถมือ 1",
-      color: "Red",
-      km: "10,000",
-      brand: "Honda",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8SG9uZGF8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1609904403133-c858367c09af?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fEhvbmRhfGVufDB8fDB8fHww",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Nissan KICKS e-POWER 2024",
-      details:
-        "สนุกเร้าใจไปกับรถยนต์อเนกประสงค์ Nissan KICKS e-POWER (นิสสัน คิกส์ อี-พาวเวอร์) รถยนต์ไฮบริดอเนกประสงค์ขนาดเล็ก 5 ประตู 5 ที่นั่ง ขับเคลื่อนด้วยไฟฟ้าล้วน โดดเด่นภายใต้ลุคใหม่สุดสปอร์ต เท่ หรู สไตล์พรีเมียมทูโทน ตอบสนองทุกความเร็วที่ต้องการด้วยเทคโนโลยี e-POWER ขับเคลื่อนด้วยพลังงานไฟฟ้าล้วน โดยติดตั้งเครื่องยนต์เบนซินเพื่อสร้างกระแสไฟในตัว ทำให้ประหยัดน้ำมันมากกว่าไฮบริดทั่วไป โดยมีอัตราสิ้นเปลืองเฉลี่ย 23.8 กิโลเมตร/ลิตร",
-      price: "979,900",
-      label: "รถมือ 1",
-      color: "Blue",
-      km: "10,000",
-      brand: "Nissan",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fE5pc3NhbnxlbnwwfHwwfHx8MA%3D%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1611953070713-6e5fb4b97b66?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Tmlzc2FufGVufDB8fDB8fHww",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "BMW 2 Series 2024",
-      details:
-        "BMW 2 Series (บีเอ็มดับเบิลยู 2 ซีรีส์ 2024) ยนตรกรรมคูเป้ดีไซน์สปอร์ตดุดันที่ผสานความโฉบเฉี่ยวในคลาสคอมแพ็ก เพียบพร้อมด้วยเทคโนโลยีความปลอดภัยอันล้ำสมัย ระบบความบันเทิง และออปชันที่จะช่วยอำนวยความสะดวกระหว่างการเดินทางแบบจัดเต็ม ขับเคลื่อนด้วยสมรรถนะทรงพลัง ตอบโจทย์การผจญภัยทุกเส้นทาง มาพร้อมราคาเริ่มต้นที่ 1.99 ล้านบาท ",
-      price: "1,999,000",
-      label: "รถมือ 2",
-      color: "Blue",
-      km: "10,000",
-      brand: "BMW",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Qk1XfGVufDB8fDB8fHww",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1603189617530-6d32306f57c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fEJNV3xlbnwwfHwwfHx8MA%3D%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Mercedes-AMG EQE 53 4MATIC+",
-      details:
-        "รถยนต์ Mercedes-AMG EQE Saloon เป็นก้าวแรกสู่ Business-Class พลังงานไฟฟ้าจาก Mercedes-AMG โดยมีแรงบันดาลใจจาก Affalterbach รถยนต์สปอร์ตรุ่นนี้ถูกสร้างขึ้นจากแม่แบบที่มีความไดนามิกของรถยนต์ EQ จาก Mercedes-AMG เป็นการผสมผสานดีไซน์ Saloon และ Sport Coupé ค้นพบข้อสรุปการออกแบบภายนอกที่เน้นความสปอร์ตของรถยนต์ไฟฟ้ารุ่น Mercedes-AMG EQE 53 4MATIC+ ได้แล้ววันนี้",
-      price: "5,950,000.00",
-      label: "รถมือ 2",
-      color: "White",
-      km: "10,000",
-      brand: "Mercedes-Benz",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1617814065893-00757125efab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "2 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Lamborghini Aventador 2023",
-      details:
-        "Lamborghini Aventador 2023 เป็นซูเปอร์คาร์สมรรถนะสูงที่ใครๆ ก็ต้องเหลียวมอง มันมีเครื่องยนต์ V12 730 แรงม้า ขับเคลื่อนสี่ล้อ และทำเวลา 0-60 ไมล์ต่อชั่วโมงได้อย่างน่าประทับใจในเวลาเพียง 2.8 วินาที ภายในได้รับการอัพเกรดด้วยสิ่งอำนวยความสะดวกที่หรูหราทันสมัย เช่น พวงมาลัยหุ้มหนัง แผงหน้าปัดดิจิตอลเต็มรูปแบบ และเทคโนโลยีช่วยเหลือผู้ขับขี่ขั้นสูง ด้วยการออกแบบที่มีสไตล์และวิศวกรรมที่ล้ำสมัย Lamborghini Aventador 2023 จึงมั่นใจได้ว่าจะเป็นหนึ่งในรถยนต์ที่เป็นที่ต้องการมากที่สุดในตลาด",
-      price: "46,500,000",
-      label: "รถมือ 2",
-      color: "Red",
-      km: "10,000",
-      brand: "Lamborghini",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1618846446712-a4eda2adc05f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TGFtYm9yZ2hpbmklMjBBdmVudGFkb3J8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1612825173281-9a193378527e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8TGFtYm9yZ2hpbmklMjBBdmVudGFkb3J8ZW58MHx8MHx8fDA%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "2 ประตู",
-        class: "sports car",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Honda HR-V 2024",
-      details:
-        "Honda HR-V (ฮอนด้า เอชอาร์-วี 2024) รถยนต์ Crossover SUV ขนาดเล็ก ทรงคูเป้ ตัวถัง 5 ประตู 5 ที่นั่ง บอดี้ภายนอกโดดเด่นด้วยดีไซน์สปอร์ตพรีเมียม ภายในตกแต่งอย่างทันสมัย ครบครันด้วยฟีเจอร์อำนวยความสะดวกต่าง ๆ และเทคโนโลยีความปลอดภัยอัจฉริยะ Honda SENSING พร้อมขับเคลื่อนด้วยระบบฟูลไฮบริด e:HEV อัตราสิ้นเปลืองเฉลี่ย 25.6 กิโลเมตร/ลิตร",
-      price: "1,179,000",
-      label: "รถมือ 1",
-      color: "Red",
-      km: "10,000",
-      brand: "Honda",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8SG9uZGF8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1609904403133-c858367c09af?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fEhvbmRhfGVufDB8fDB8fHww",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Nissan KICKS e-POWER 2024",
-      details:
-        "สนุกเร้าใจไปกับรถยนต์อเนกประสงค์ Nissan KICKS e-POWER (นิสสัน คิกส์ อี-พาวเวอร์) รถยนต์ไฮบริดอเนกประสงค์ขนาดเล็ก 5 ประตู 5 ที่นั่ง ขับเคลื่อนด้วยไฟฟ้าล้วน โดดเด่นภายใต้ลุคใหม่สุดสปอร์ต เท่ หรู สไตล์พรีเมียมทูโทน ตอบสนองทุกความเร็วที่ต้องการด้วยเทคโนโลยี e-POWER ขับเคลื่อนด้วยพลังงานไฟฟ้าล้วน โดยติดตั้งเครื่องยนต์เบนซินเพื่อสร้างกระแสไฟในตัว ทำให้ประหยัดน้ำมันมากกว่าไฮบริดทั่วไป โดยมีอัตราสิ้นเปลืองเฉลี่ย 23.8 กิโลเมตร/ลิตร",
-      price: "979,900",
-      label: "รถมือ 1",
-      color: "Blue",
-      km: "10,000",
-      brand: "Nissan",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1581540222194-0def2dda95b8?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fE5pc3NhbnxlbnwwfHwwfHx8MA%3D%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1611953070713-6e5fb4b97b66?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8Tmlzc2FufGVufDB8fDB8fHww",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "BMW 2 Series 2024",
-      details:
-        "BMW 2 Series (บีเอ็มดับเบิลยู 2 ซีรีส์ 2024) ยนตรกรรมคูเป้ดีไซน์สปอร์ตดุดันที่ผสานความโฉบเฉี่ยวในคลาสคอมแพ็ก เพียบพร้อมด้วยเทคโนโลยีความปลอดภัยอันล้ำสมัย ระบบความบันเทิง และออปชันที่จะช่วยอำนวยความสะดวกระหว่างการเดินทางแบบจัดเต็ม ขับเคลื่อนด้วยสมรรถนะทรงพลัง ตอบโจทย์การผจญภัยทุกเส้นทาง มาพร้อมราคาเริ่มต้นที่ 1.99 ล้านบาท ",
-      price: "1,999,000",
-      label: "รถมือ 2",
-      color: "Blue",
-      km: "10,000",
-      brand: "BMW",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Qk1XfGVufDB8fDB8fHww",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1603189617530-6d32306f57c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fEJNV3xlbnwwfHwwfHx8MA%3D%3D",
-        },
-      ],
-      featured: false,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Mercedes-AMG EQE 53 4MATIC+",
-      details:
-        "รถยนต์ Mercedes-AMG EQE Saloon เป็นก้าวแรกสู่ Business-Class พลังงานไฟฟ้าจาก Mercedes-AMG โดยมีแรงบันดาลใจจาก Affalterbach รถยนต์สปอร์ตรุ่นนี้ถูกสร้างขึ้นจากแม่แบบที่มีความไดนามิกของรถยนต์ EQ จาก Mercedes-AMG เป็นการผสมผสานดีไซน์ Saloon และ Sport Coupé ค้นพบข้อสรุปการออกแบบภายนอกที่เน้นความสปอร์ตของรถยนต์ไฟฟ้ารุ่น Mercedes-AMG EQE 53 4MATIC+ ได้แล้ววันนี้",
-      price: "5,950,000.00",
-      label: "รถมือ 2",
-      color: "White",
-      km: "10,000",
-      brand: "Mercedes-Benz",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1617814065893-00757125efab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-      ],
-      featured: false,
-      type: {
-        door: "2 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "BMW 2 Series 2024",
-      details:
-        "BMW 2 Series (บีเอ็มดับเบิลยู 2 ซีรีส์ 2024) ยนตรกรรมคูเป้ดีไซน์สปอร์ตดุดันที่ผสานความโฉบเฉี่ยวในคลาสคอมแพ็ก เพียบพร้อมด้วยเทคโนโลยีความปลอดภัยอันล้ำสมัย ระบบความบันเทิง และออปชันที่จะช่วยอำนวยความสะดวกระหว่างการเดินทางแบบจัดเต็ม ขับเคลื่อนด้วยสมรรถนะทรงพลัง ตอบโจทย์การผจญภัยทุกเส้นทาง มาพร้อมราคาเริ่มต้นที่ 1.99 ล้านบาท ",
-      price: "1,999,000",
-      label: "รถมือ 2",
-      color: "Blue",
-      km: "10,000",
-      brand: "BMW",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1607853554439-0069ec0f29b6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Qk1XfGVufDB8fDB8fHww",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1603189617530-6d32306f57c5?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzF8fEJNV3xlbnwwfHwwfHx8MA%3D%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "4 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-    {
-      name: "Mercedes-AMG EQE 53 4MATIC+",
-      details:
-        "รถยนต์ Mercedes-AMG EQE Saloon เป็นก้าวแรกสู่ Business-Class พลังงานไฟฟ้าจาก Mercedes-AMG โดยมีแรงบันดาลใจจาก Affalterbach รถยนต์สปอร์ตรุ่นนี้ถูกสร้างขึ้นจากแม่แบบที่มีความไดนามิกของรถยนต์ EQ จาก Mercedes-AMG เป็นการผสมผสานดีไซน์ Saloon และ Sport Coupé ค้นพบข้อสรุปการออกแบบภายนอกที่เน้นความสปอร์ตของรถยนต์ไฟฟ้ารุ่น Mercedes-AMG EQE 53 4MATIC+ ได้แล้ววันนี้",
-      price: "5,950,000.00",
-      label: "รถมือ 2",
-      color: "White",
-      km: "10,000",
-      brand: "Mercedes-Benz",
-      image: [
-        {
-          img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-        {
-          img: "https://images.unsplash.com/photo-1617814065893-00757125efab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TWVyY2VkZXMlMjBBTUd8ZW58MHx8MHx8fDA%3D",
-        },
-      ],
-      featured: true,
-      type: {
-        door: "2 ประตู",
-        class: "รถเก๋ง",
-        energy: "น้ำมัน",
-      },
-    },
-  ];
-
-  const getLabel = () => {
-    let uniqueEnergy = new Set();
-
-    carProduct.forEach((car) => {
-      uniqueEnergy.add(car.type.class);
-      uniqueEnergy.add(car.type.door);
-      uniqueEnergy.add(car.type.energy);
-    });
-
-    return uniqueEnergy;
+  const getData = async () => {
+    const res = await axios.get("/api/data");
+    setData(res.data);
   };
 
   useEffect(() => {
-    const updatedUniqueEnergy = getLabel();
-    setLabel(updatedUniqueEnergy);
+    const data = getData();
+    setData(data);
   }, []);
 
   const getBrand = () => {
-    let uniqueEnergy = new Set();
+    if (data !== null) {
+      let uniqueEnergy = new Set();
 
-    carProduct.forEach((car) => {
-      uniqueEnergy.add(car.brand);
-    });
+      data.forEach((car) => {
+        uniqueEnergy.add(car.brand);
+      });
 
-    return uniqueEnergy;
+      return uniqueEnergy;
+    }
   };
 
   useEffect(() => {
-    const updatedUniqueEnergy = getBrand();
-    setBrand(updatedUniqueEnergy);
+    if (data !== null) {
+      const updatedUniqueEnergy = getBrand();
+      setBrand(Array.from(updatedUniqueEnergy));
+    }
   }, []);
 
   return (
@@ -420,7 +130,7 @@ export default function Home() {
           {card.map((item, index) => (
             <Link
               key={index}
-              href="#"
+              href={item.ref}
               className="group relative block bg-black mx-20 my-10"
             >
               <Image
@@ -494,92 +204,99 @@ export default function Home() {
             </div>
 
             <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {carProduct
-                .slice(startIndex, startIndex + 4)
-                .filter((item) => item.featured === true)
-                .map(({ name, price, image }, index) => (
-                  <li key={index}>
-                    <Link href="#" className="group block overflow-hidden">
-                      <div className="relative h-[350px] sm:h-[450px]">
-                        <Image
-                          width={1000000}
-                          height={100}
-                          src={image[0].img}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0"
-                        />
-                        <Image
-                          width={1000000}
-                          height={100}
-                          src={image[1].img}
-                          alt=""
-                          className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
-                        />
-                      </div>
+              {data && data.length > 0
+                ? data.slice(startIndex, startIndex + 4).map(({ infos }) =>
+                    infos.map(({ name, gallery, price, id }) => (
+                      <li key={id}>
+                        <Link
+                          href={`/product/${id}`}
+                          className="group block overflow-hidden"
+                        >
+                          <div className="relative h-[350px] sm:h-[450px]">
+                            <Image
+                              width={1000000}
+                              height={100}
+                              src={gallery[0].img}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover opacity-100 group-hover:opacity-0"
+                            />
+                            <Image
+                              width={1000000}
+                              height={100}
+                              src={gallery[1].img}
+                              alt=""
+                              className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
+                            />
+                          </div>
 
-                      <div className="relative bg-white pt-3">
-                        <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
-                          {name}
-                        </h3>
-                        <p className="mt-1.5 tracking-wide text-gray-900">
-                          ${price}
-                        </p>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
+                          <div className="relative bg-white pt-3">
+                            <h3 className="text-sm text-gray-700 group-hover:underline group-hover:underline-offset-4">
+                              {name}
+                            </h3>
+                            <p className="mt-1.5 tracking-wide text-gray-900">
+                              ${price}
+                            </p>
+                          </div>
+                        </Link>
+                      </li>
+                    ))
+                  )
+                : null}
             </ul>
+
             <div className=" flex justify-end">
-              <div className="inline-flex items-center justify-center gap-3">
-                <Button
-                  variant="outlined"
-                  onClick={handleRewind}
-                  disabled={Math.ceil(startIndex / 3) + 1 === 1}
-                >
-                  <span className="sr-only">Next Page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+              {data && (
+                <div className="inline-flex items-center justify-center gap-3">
+                  <Button
+                    variant="outlined"
+                    onClick={handleRewind}
+                    disabled={Math.ceil(startIndex / 3) + 1 === 1}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Button>
+                    <span className="sr-only">Next Page</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Button>
 
-                <p className="text-xs text-gray-900">
-                  {Math.ceil(startIndex / 4) + 1}
-                  <span className="mx-0.25">/</span>
-                  {Math.ceil(carProduct.length / 4)}
-                </p>
+                  <p className="text-xs text-gray-900">
+                    {Math.ceil(startIndex / 4) + 1}
+                    <span className="mx-0.25">/</span>
+                    {Math.ceil(data.length / 4)}
+                  </p>
 
-                <Button
-                  variant="outlined"
-                  disabled={
-                    Math.ceil(startIndex / 4) + 1 ===
-                    Math.ceil(carProduct.length / 4)
-                  }
-                  onClick={handleForward}
-                >
-                  <span className="sr-only">Next Page</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3 w-3"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                  <Button
+                    variant="outlined"
+                    disabled={
+                      Math.ceil(startIndex / 4) + 1 ===
+                      Math.ceil(data.length / 4)
+                    }
+                    onClick={handleForward}
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Button>
-              </div>
+                    <span className="sr-only">Next Page</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-3 w-3"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -602,7 +319,7 @@ export default function Home() {
                     </div>
 
                     <Link
-                      href="#"
+                      href={`/products`}
                       className="mt-8 inline-block rounded border border-gray-900 bg-gray-900 px-12 py-3 text-sm font-medium text-white transition hover:shadow focus:outline-none focus:ring"
                     >
                       สินค้ามือ 1 ทั้งหมด
@@ -612,40 +329,45 @@ export default function Home() {
 
                 <div className="lg:col-span-2 lg:py-8">
                   <ul className="grid grid-cols-2 gap-4">
-                    {carProduct
-                      .slice(0, 3)
-                      .filter((item) => item.label === "รถมือ 1")
-                      .map(({ name, price, image }, index) => (
-                        <li key={index}>
-                          <Link href="#" className="group block">
-                            <div className="relative">
-                              <Image
-                                width={`${10000}`}
-                                height={100}
-                                src={image[0].img}
-                                alt=""
-                                className="aspect-square w-full rounded object-cover group-hover:opacity-0"
-                              />
-                              <Image
-                                width={1000000}
-                                height={100}
-                                src={image[1].img}
-                                alt=""
-                                className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
-                              />
-                            </div>
-                            <div className="mt-3">
-                              <h3 className="font-medium text-gray-900 group-hover:underline group-hover:underline-offset-4">
-                                {name}
-                              </h3>
-
-                              <p className="mt-1 text-sm text-gray-700">
-                                ฿{price}
-                              </p>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
+                    {data && data.length > 0
+                      ? data.slice(0, 2).map(({ infos }, index) =>
+                          infos
+                            .filter((item) => item.usecase === "มือ 1")
+                            .map(({ name, price, gallery, id }, index) => (
+                              <li key={index}>
+                                <Link
+                                  href={`/product/${id}`}
+                                  className="group block"
+                                >
+                                  <div className="relative">
+                                    <Image
+                                      width={1000} // Adjusted width value
+                                      height={100}
+                                      src={gallery[0].img}
+                                      alt=""
+                                      className="aspect-square w-full rounded object-cover group-hover:opacity-0"
+                                    />
+                                    <Image
+                                      width={1000} // Adjusted width value
+                                      height={100}
+                                      src={gallery[1].img}
+                                      alt=""
+                                      className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
+                                    />
+                                  </div>
+                                  <div className="mt-3">
+                                    <h3 className="font-medium text-gray-900 group-hover:underline group-hover:underline-offset-4">
+                                      {name}
+                                    </h3>
+                                    <p className="mt-1 text-sm text-gray-700">
+                                      ฿{price}
+                                    </p>
+                                  </div>
+                                </Link>
+                              </li>
+                            ))
+                        )
+                      : null}
                   </ul>
                 </div>
               </div>
@@ -672,7 +394,7 @@ export default function Home() {
                     </div>
 
                     <Link
-                      href="#"
+                      href={`/products`}
                       className="mt-8 inline-block rounded border border-gray-900 bg-gray-900 px-12 py-3 text-sm font-medium text-white transition hover:shadow focus:outline-none focus:ring"
                     >
                       สินค้ามือ 2 ทั้งหมด
@@ -682,40 +404,45 @@ export default function Home() {
 
                 <div className="lg:col-span-2 lg:py-8">
                   <ul className="grid grid-cols-2 gap-4">
-                    {carProduct
-                      .slice(0, 4)
-                      .filter((item) => item.label === "รถมือ 2")
-                      .map(({ name, price, image }, index) => (
-                        <li key={index}>
-                          <Link href="#" className="group block">
-                            <div className="relative">
-                              <Image
-                                width={`${10000}`}
-                                height={100}
-                                src={image[0].img}
-                                alt=""
-                                className="aspect-square w-full rounded object-cover group-hover:opacity-0"
-                              />
-                              <Image
-                                width={1000000}
-                                height={100}
-                                src={image[1].img}
-                                alt=""
-                                className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
-                              />
-                            </div>
-                            <div className="mt-3">
-                              <h3 className="font-medium text-gray-900 group-hover:underline group-hover:underline-offset-4">
-                                {name}
-                              </h3>
-
-                              <p className="mt-1 text-sm text-gray-700">
-                                ฿{price}
-                              </p>
-                            </div>
-                          </Link>
-                        </li>
-                      ))}
+                    {data && data.length > 0
+                      ? data.slice(0, 7).map(({ infos }, index) =>
+                          infos
+                            .filter((item) => item.usecase === "มือ 2")
+                            .map(({ name, price, gallery, id }, index) => (
+                              <li key={index}>
+                                <Link
+                                  href={`/product/${id}`}
+                                  className="group block"
+                                >
+                                  <div className="relative">
+                                    <Image
+                                      width={1000} // Adjusted width value
+                                      height={100}
+                                      src={gallery[0].img}
+                                      alt=""
+                                      className="aspect-square w-full rounded object-cover group-hover:opacity-0"
+                                    />
+                                    <Image
+                                      width={1000} // Adjusted width value
+                                      height={100}
+                                      src={gallery[1].img}
+                                      alt=""
+                                      className="absolute inset-0 h-full w-full object-cover opacity-0 group-hover:opacity-100"
+                                    />
+                                  </div>
+                                  <div className="mt-3">
+                                    <h3 className="font-medium text-gray-900 group-hover:underline group-hover:underline-offset-4">
+                                      {name}
+                                    </h3>
+                                    <p className="mt-1 text-sm text-gray-700">
+                                      ฿{price}
+                                    </p>
+                                  </div>
+                                </Link>
+                              </li>
+                            ))
+                        )
+                      : null}
                   </ul>
                 </div>
               </div>
@@ -730,57 +457,28 @@ export default function Home() {
           </div>
           <div className=" flex justify-center my-10">
             <ul className="grid grid-cols-2  lg:grid-cols-5">
-              {Array.from(brand).map((carBrand, index) => (
-                <li key={index} className=" mx-4 lg:mx-10 text-center my-5">
-                  <Link
-                    href={"#"}
-                    key={index}
-                    className="    hover:bg-[#fb7185] hover:text-white flex flex-col justify-center items-center border border-gray-500 py-10 px-10 lg:px-20"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className=" h-12 w-12 "
-                      viewBox="0 0 512 512"
-                      id="car"
+              {data &&
+                data.length > 0 &&
+                data.map(({ label }, index) => (
+                  <li key={index} className=" mx-4 lg:mx-10 text-center my-5">
+                    <Link
+                      href={"/products"}
+                      key={index}
+                      className="    hover:bg-[#fb7185] hover:text-white flex flex-col justify-center items-center border border-gray-500 py-10 px-10 lg:px-20"
                     >
-                      <path d="M508.8 390.9c-.6 4.1-1.6 8.1-3.1 11.2-2.7 5.5-5.3 6-15.5 5.5-13.2-.6-32.1 0-52.1.8 0 5.5.2 8.1.2 8.1 1.3 15.1 8.1 15.6 10.8 15.6h43c3.8 0 7.3 0 10-1.8 3.5-2.3 5-9 6.3-20.7.2-1.7.3-3.9.4-6.5v-.1c0-.8.1-1.8.1-2.9V399c0-2.7 0-5.7-.1-8.1zM3 390.9c.6 4.1 1.6 8.1 3.1 11.2 2.7 5.5 5.3 6 15.5 5.5 13.2-.6 32.1 0 52.1.8 0 5.5-.2 8.1-.2 8.1-1.3 15.1-8.1 15.6-10.8 15.6h-43c-3.8 0-7 0-10-1.8-3.6-2.1-5-9-6.3-20.7-.2-1.7-.3-3.9-.4-6.5v-.1c0-.8-.1-1.8-.1-2.9V399c.1-2.7.1-5.7.1-8.1z"></path>
-                      <path d="M512 296.6c0-30.7-4-60.7-5.6-64-1.2-2.4-8.9-8.7-26.4-20.6-17.7-12.1-17.3-10.3-20.5-18.2 2.9-.9 5.7-2.6 7.4-2.8 3.8-.4 4 3.2 11.9 3.2s25-2.1 28.5-5.6c3.5-3.5 4.6-4.7 4.6-7.8s-1.8-9.5-5.2-13.3-17.9-5.7-26.4-6.8-9.7 0-11.9 1.4c-3.5 2.2-3.7 22.3-3.7 22.3l-8.3.2c-5.4-13.3-12.9-40.1-24.6-61.2-12.8-23-26.2-30.2-31.8-32-5.5-1.7-10.5-2.9-48-6.7-38.3-4-68.8-4.5-96-4.5s-57.7.6-96 4.5c-37.5 3.9-42.5 5-48 6.7-5.5 1.7-19 9-31.8 32-11.7 21.1-19.2 47.9-24.6 61.2l-8.3-.2s-.1-20.1-3.7-22.3c-2.2-1.4-3.4-2.6-11.9-1.4s-23 3-26.4 6.8S.1 177.7.1 180.8s1.1 4.4 4.6 7.8c3.5 3.5 20.6 5.6 28.5 5.6s8.1-3.6 11.9-3.2c1.7.2 4.6 1.9 7.4 2.8-3.3 7.9-2.8 6.1-20.5 18.2-17.5 12-25.3 18.2-26.4 20.6-1.6 3.3-5.6 33.3-5.6 64s2.2 58.3 2.2 68.1c0 4.1 0 11.3.9 18.2.6 4.1 1.5 8.1 3.1 11.2 2.7 5.5 5.2 6 15.5 5.5 13.2-.6 32.3 0 52 .8 13.2.5 26.7 1 38.7 1.3 30 .6 21.2-4.4 34-4.2 12.8.2 63.3 2.3 109.5 2.3s96.8-2.1 109.5-2.3c12.8-.2 4 4.8 34 4.2 12-.2 25.5-.8 38.7-1.3 19.7-.7 38.9-1.4 52-.8 10.3.5 12.8 0 15.5-5.5 1.5-3.1 2.5-7.1 3.1-11.2 1-6.9.9-14.1.9-18.2.2-9.7 2.4-37.4 2.4-68.1zM86.2 145.2c4.8-11.2 19.2-33.7 26.2-37.7 1.7-1 16.6-5.7 53.9-8.2 34.3-2.3 72.2-3.2 89.8-3.2s55.5.9 89.8 3.2c37.2 2.5 52.3 7.1 53.9 8.2 9 6.2 21.4 26.5 26.2 37.7 4.8 11.2 11.2 33.2 10 36.2-1.2 3 1.2 4.5-15 3.2-16.1-1.2-117.2-2.5-164.8-2.5-47.5 0-148.6 1.3-164.8 2.5-16.2 1.2-13.8-.2-15-3.2-1.4-3 5-24.9 9.8-36.2zM123 270.4c-7.2 1.8-11.5 5.7-20.5 5.6-9 0-33.3-4.1-38.5-4.3-5.2-.2-9.8 3.5-12.5 4.2s-8-1.2-16-3.7-12.7-1.8-15.3-12.7c-2.7-10.8 0-26.3 0-26.3 17.3-.8 34 .8 65.3 9.6 31.3 8.8 48.7 25.7 48.7 25.7s-4 .1-11.2 1.9zm235.2 78.8c-14.3 1.9-74.2 2.4-102.2 2.4s-87.9-.6-102.2-2.4c-14.6-1.9-33.6-19.4-20.5-33.3 17.7-18.9 14.4-18.3 54.6-23.5 34.8-4.5 61.2-4.7 68.1-4.7 6.8 0 33.3.3 68.1 4.7 40.2 5.2 36.9 4.6 54.6 23.5 13.1 13.9-5.9 31.4-20.5 33.3zm133.6-89.6c-2.7 10.8-7.3 10.2-15.3 12.7s-13.3 4.3-16 3.7-7.3-4.3-12.5-4.2c-5.2.2-29.5 4.3-38.5 4.3s-13.3-3.8-20.5-5.6c-7.2-1.8-11.2-1.8-11.2-1.8s17.3-17 48.7-25.7c31.3-8.8 48-10.4 65.3-9.6 0-.2 2.7 15.3 0 26.2z"></path>
-                    </svg>
-                    {carBrand}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        {/* ค้าหารถจาก ประเภท .............................................................................................................................*/}
-        <div>
-          <div className=" flex justify-center">
-            <h1 className="text-3xl">ค้นหารถจากประเภทรถ</h1>
-          </div>
-          <div className=" flex justify-center my-10">
-            <ul className="grid grid-cols-2  lg:grid-cols-5">
-              {Array.from(label).map((carLable, index) => (
-                <li key={index} className=" mx-4 lg:mx-10 text-center my-5">
-                  <Link
-                    href={"#"}
-                    key={index}
-                    className="    hover:bg-[#fb7185] hover:text-white flex flex-col justify-center items-center border border-gray-500 py-10 px-10 lg:px-20"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className=" h-12 w-12 "
-                      viewBox="0 0 512 512"
-                      id="car"
-                    >
-                      <path d="M508.8 390.9c-.6 4.1-1.6 8.1-3.1 11.2-2.7 5.5-5.3 6-15.5 5.5-13.2-.6-32.1 0-52.1.8 0 5.5.2 8.1.2 8.1 1.3 15.1 8.1 15.6 10.8 15.6h43c3.8 0 7.3 0 10-1.8 3.5-2.3 5-9 6.3-20.7.2-1.7.3-3.9.4-6.5v-.1c0-.8.1-1.8.1-2.9V399c0-2.7 0-5.7-.1-8.1zM3 390.9c.6 4.1 1.6 8.1 3.1 11.2 2.7 5.5 5.3 6 15.5 5.5 13.2-.6 32.1 0 52.1.8 0 5.5-.2 8.1-.2 8.1-1.3 15.1-8.1 15.6-10.8 15.6h-43c-3.8 0-7 0-10-1.8-3.6-2.1-5-9-6.3-20.7-.2-1.7-.3-3.9-.4-6.5v-.1c0-.8-.1-1.8-.1-2.9V399c.1-2.7.1-5.7.1-8.1z"></path>
-                      <path d="M512 296.6c0-30.7-4-60.7-5.6-64-1.2-2.4-8.9-8.7-26.4-20.6-17.7-12.1-17.3-10.3-20.5-18.2 2.9-.9 5.7-2.6 7.4-2.8 3.8-.4 4 3.2 11.9 3.2s25-2.1 28.5-5.6c3.5-3.5 4.6-4.7 4.6-7.8s-1.8-9.5-5.2-13.3-17.9-5.7-26.4-6.8-9.7 0-11.9 1.4c-3.5 2.2-3.7 22.3-3.7 22.3l-8.3.2c-5.4-13.3-12.9-40.1-24.6-61.2-12.8-23-26.2-30.2-31.8-32-5.5-1.7-10.5-2.9-48-6.7-38.3-4-68.8-4.5-96-4.5s-57.7.6-96 4.5c-37.5 3.9-42.5 5-48 6.7-5.5 1.7-19 9-31.8 32-11.7 21.1-19.2 47.9-24.6 61.2l-8.3-.2s-.1-20.1-3.7-22.3c-2.2-1.4-3.4-2.6-11.9-1.4s-23 3-26.4 6.8S.1 177.7.1 180.8s1.1 4.4 4.6 7.8c3.5 3.5 20.6 5.6 28.5 5.6s8.1-3.6 11.9-3.2c1.7.2 4.6 1.9 7.4 2.8-3.3 7.9-2.8 6.1-20.5 18.2-17.5 12-25.3 18.2-26.4 20.6-1.6 3.3-5.6 33.3-5.6 64s2.2 58.3 2.2 68.1c0 4.1 0 11.3.9 18.2.6 4.1 1.5 8.1 3.1 11.2 2.7 5.5 5.2 6 15.5 5.5 13.2-.6 32.3 0 52 .8 13.2.5 26.7 1 38.7 1.3 30 .6 21.2-4.4 34-4.2 12.8.2 63.3 2.3 109.5 2.3s96.8-2.1 109.5-2.3c12.8-.2 4 4.8 34 4.2 12-.2 25.5-.8 38.7-1.3 19.7-.7 38.9-1.4 52-.8 10.3.5 12.8 0 15.5-5.5 1.5-3.1 2.5-7.1 3.1-11.2 1-6.9.9-14.1.9-18.2.2-9.7 2.4-37.4 2.4-68.1zM86.2 145.2c4.8-11.2 19.2-33.7 26.2-37.7 1.7-1 16.6-5.7 53.9-8.2 34.3-2.3 72.2-3.2 89.8-3.2s55.5.9 89.8 3.2c37.2 2.5 52.3 7.1 53.9 8.2 9 6.2 21.4 26.5 26.2 37.7 4.8 11.2 11.2 33.2 10 36.2-1.2 3 1.2 4.5-15 3.2-16.1-1.2-117.2-2.5-164.8-2.5-47.5 0-148.6 1.3-164.8 2.5-16.2 1.2-13.8-.2-15-3.2-1.4-3 5-24.9 9.8-36.2zM123 270.4c-7.2 1.8-11.5 5.7-20.5 5.6-9 0-33.3-4.1-38.5-4.3-5.2-.2-9.8 3.5-12.5 4.2s-8-1.2-16-3.7-12.7-1.8-15.3-12.7c-2.7-10.8 0-26.3 0-26.3 17.3-.8 34 .8 65.3 9.6 31.3 8.8 48.7 25.7 48.7 25.7s-4 .1-11.2 1.9zm235.2 78.8c-14.3 1.9-74.2 2.4-102.2 2.4s-87.9-.6-102.2-2.4c-14.6-1.9-33.6-19.4-20.5-33.3 17.7-18.9 14.4-18.3 54.6-23.5 34.8-4.5 61.2-4.7 68.1-4.7 6.8 0 33.3.3 68.1 4.7 40.2 5.2 36.9 4.6 54.6 23.5 13.1 13.9-5.9 31.4-20.5 33.3zm133.6-89.6c-2.7 10.8-7.3 10.2-15.3 12.7s-13.3 4.3-16 3.7-7.3-4.3-12.5-4.2c-5.2.2-29.5 4.3-38.5 4.3s-13.3-3.8-20.5-5.6c-7.2-1.8-11.2-1.8-11.2-1.8s17.3-17 48.7-25.7c31.3-8.8 48-10.4 65.3-9.6 0-.2 2.7 15.3 0 26.2z"></path>
-                    </svg>
-                    {carLable}
-                  </Link>
-                </li>
-              ))}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className=" h-12 w-12 "
+                        viewBox="0 0 512 512"
+                        id="car"
+                      >
+                        <path d="M508.8 390.9c-.6 4.1-1.6 8.1-3.1 11.2-2.7 5.5-5.3 6-15.5 5.5-13.2-.6-32.1 0-52.1.8 0 5.5.2 8.1.2 8.1 1.3 15.1 8.1 15.6 10.8 15.6h43c3.8 0 7.3 0 10-1.8 3.5-2.3 5-9 6.3-20.7.2-1.7.3-3.9.4-6.5v-.1c0-.8.1-1.8.1-2.9V399c0-2.7 0-5.7-.1-8.1zM3 390.9c.6 4.1 1.6 8.1 3.1 11.2 2.7 5.5 5.3 6 15.5 5.5 13.2-.6 32.1 0 52.1.8 0 5.5-.2 8.1-.2 8.1-1.3 15.1-8.1 15.6-10.8 15.6h-43c-3.8 0-7 0-10-1.8-3.6-2.1-5-9-6.3-20.7-.2-1.7-.3-3.9-.4-6.5v-.1c0-.8-.1-1.8-.1-2.9V399c.1-2.7.1-5.7.1-8.1z"></path>
+                        <path d="M512 296.6c0-30.7-4-60.7-5.6-64-1.2-2.4-8.9-8.7-26.4-20.6-17.7-12.1-17.3-10.3-20.5-18.2 2.9-.9 5.7-2.6 7.4-2.8 3.8-.4 4 3.2 11.9 3.2s25-2.1 28.5-5.6c3.5-3.5 4.6-4.7 4.6-7.8s-1.8-9.5-5.2-13.3-17.9-5.7-26.4-6.8-9.7 0-11.9 1.4c-3.5 2.2-3.7 22.3-3.7 22.3l-8.3.2c-5.4-13.3-12.9-40.1-24.6-61.2-12.8-23-26.2-30.2-31.8-32-5.5-1.7-10.5-2.9-48-6.7-38.3-4-68.8-4.5-96-4.5s-57.7.6-96 4.5c-37.5 3.9-42.5 5-48 6.7-5.5 1.7-19 9-31.8 32-11.7 21.1-19.2 47.9-24.6 61.2l-8.3-.2s-.1-20.1-3.7-22.3c-2.2-1.4-3.4-2.6-11.9-1.4s-23 3-26.4 6.8S.1 177.7.1 180.8s1.1 4.4 4.6 7.8c3.5 3.5 20.6 5.6 28.5 5.6s8.1-3.6 11.9-3.2c1.7.2 4.6 1.9 7.4 2.8-3.3 7.9-2.8 6.1-20.5 18.2-17.5 12-25.3 18.2-26.4 20.6-1.6 3.3-5.6 33.3-5.6 64s2.2 58.3 2.2 68.1c0 4.1 0 11.3.9 18.2.6 4.1 1.5 8.1 3.1 11.2 2.7 5.5 5.2 6 15.5 5.5 13.2-.6 32.3 0 52 .8 13.2.5 26.7 1 38.7 1.3 30 .6 21.2-4.4 34-4.2 12.8.2 63.3 2.3 109.5 2.3s96.8-2.1 109.5-2.3c12.8-.2 4 4.8 34 4.2 12-.2 25.5-.8 38.7-1.3 19.7-.7 38.9-1.4 52-.8 10.3.5 12.8 0 15.5-5.5 1.5-3.1 2.5-7.1 3.1-11.2 1-6.9.9-14.1.9-18.2.2-9.7 2.4-37.4 2.4-68.1zM86.2 145.2c4.8-11.2 19.2-33.7 26.2-37.7 1.7-1 16.6-5.7 53.9-8.2 34.3-2.3 72.2-3.2 89.8-3.2s55.5.9 89.8 3.2c37.2 2.5 52.3 7.1 53.9 8.2 9 6.2 21.4 26.5 26.2 37.7 4.8 11.2 11.2 33.2 10 36.2-1.2 3 1.2 4.5-15 3.2-16.1-1.2-117.2-2.5-164.8-2.5-47.5 0-148.6 1.3-164.8 2.5-16.2 1.2-13.8-.2-15-3.2-1.4-3 5-24.9 9.8-36.2zM123 270.4c-7.2 1.8-11.5 5.7-20.5 5.6-9 0-33.3-4.1-38.5-4.3-5.2-.2-9.8 3.5-12.5 4.2s-8-1.2-16-3.7-12.7-1.8-15.3-12.7c-2.7-10.8 0-26.3 0-26.3 17.3-.8 34 .8 65.3 9.6 31.3 8.8 48.7 25.7 48.7 25.7s-4 .1-11.2 1.9zm235.2 78.8c-14.3 1.9-74.2 2.4-102.2 2.4s-87.9-.6-102.2-2.4c-14.6-1.9-33.6-19.4-20.5-33.3 17.7-18.9 14.4-18.3 54.6-23.5 34.8-4.5 61.2-4.7 68.1-4.7 6.8 0 33.3.3 68.1 4.7 40.2 5.2 36.9 4.6 54.6 23.5 13.1 13.9-5.9 31.4-20.5 33.3zm133.6-89.6c-2.7 10.8-7.3 10.2-15.3 12.7s-13.3 4.3-16 3.7-7.3-4.3-12.5-4.2c-5.2.2-29.5 4.3-38.5 4.3s-13.3-3.8-20.5-5.6c-7.2-1.8-11.2-1.8-11.2-1.8s17.3-17 48.7-25.7c31.3-8.8 48-10.4 65.3-9.6 0-.2 2.7 15.3 0 26.2z"></path>
+                      </svg>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
             </ul>
           </div>
         </div>

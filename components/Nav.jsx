@@ -117,29 +117,27 @@ const navListMenuItems = [
     title: "ชื้อรถ",
     description:
       "Learn how to use @material-tailwind/html, packed with rich components and widgets.",
-  },
-  {
-    title: "ขาย",
-    description:
-      "Learn how to use @material-tailwind/react, packed with rich components for React.",
+    ref: "/products",
   },
   {
     title: "รถใหม่",
     description:
       "A complete set of UI Elements for building faster websites in less time.",
+    ref: "/products",
   },
   {
     title: "รถมือสอง",
     description:
       "A complete set of UI Elements for building faster websites in less time.",
+    ref: "/products",
   },
 ];
 
 function NavListMenu() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const renderItems = navListMenuItems.map(({ title, description }) => (
-    <a href="#" key={title}>
+  const renderItems = navListMenuItems.map(({ title, ref ,description }) => (
+    <a href={ref} key={title}>
       <MenuItem>
         <Typography variant="h6" color="blue-gray" className="mb-1">
           {title}
@@ -198,10 +196,12 @@ const navListItems = [
   {
     label: "กิจกรรมต่างๆ",
     icon: CubeTransparentIcon,
+    ref: "event"
   },
   {
     label: "ติดต่อเรา",
     icon: UserCircleIcon,
+    ref: "contect"
   },
 ];
 
@@ -209,11 +209,11 @@ function NavList() {
   return (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center">
       <NavListMenu />
-      {navListItems.map(({ label, icon }, key) => (
+      {navListItems.map(({ label, icon , ref }, key) => (
         <Typography
           key={label}
           as="a"
-          href="#"
+          href={ref}
           variant="small"
           color="gray"
           className="font-medium text-blue-gray-500"
@@ -245,7 +245,7 @@ export default function Nav() {
       <div className="relative mx-auto flex items-center justify-between text-blue-gray-900">
         <Typography
           as="a"
-          href="#"
+          href="/"
           className="mr-4 ml-2 cursor-pointer py-1.5 font-medium"
         >
           Shop Name
